@@ -152,7 +152,7 @@ func NewCountCollect(concurrenceNums int) *CountCollect {
 }
 
 func (bench *Benchmark) InitWorker() error {
-	client, err := sdk.NewClient(nil, &dkmsopenapi.Config{
+	client, err := sdk.NewTransferClient(nil, &dkmsopenapi.Config{
 		Protocol:      tea.String("https"),
 		ClientKeyFile: tea.String(bench.config.ClientKeyPath),
 		Password:      tea.String(bench.config.P12Password),
@@ -470,7 +470,7 @@ func (recorder *CountRecorder) CountAndReset() int64 {
 }
 
 type EncryptWorker struct {
-	client            *sdk.Client
+	client            *sdk.TransferClient
 	plainText         string
 	keyId             string
 	encryptionContext map[string]interface{}
@@ -478,7 +478,7 @@ type EncryptWorker struct {
 	ca string
 }
 
-func NewEncryptWorker(client *sdk.Client, plainText string, keyId string, encryptionContext map[string]interface{}, ca string) *EncryptWorker {
+func NewEncryptWorker(client *sdk.TransferClient, plainText string, keyId string, encryptionContext map[string]interface{}, ca string) *EncryptWorker {
 	return &EncryptWorker{
 		client:            client,
 		plainText:         plainText,
@@ -512,14 +512,14 @@ func (worker *EncryptWorker) encrypt() (*kms20160120.EncryptResponse, error) {
 }
 
 type DecryptWorker struct {
-	client            *sdk.Client
+	client            *sdk.TransferClient
 	cipher            string
 	encryptionContext map[string]interface{}
 
 	ca string
 }
 
-func NewDecryptWorker(client *sdk.Client, cipher string, encryptionContext map[string]interface{}, ca string) *DecryptWorker {
+func NewDecryptWorker(client *sdk.TransferClient, cipher string, encryptionContext map[string]interface{}, ca string) *DecryptWorker {
 	return &DecryptWorker{
 		client:            client,
 		cipher:            cipher,
@@ -551,7 +551,7 @@ func (worker *DecryptWorker) decrypt() (*kms20160120.DecryptResponse, error) {
 }
 
 type SignWorker struct {
-	client    *sdk.Client
+	client    *sdk.TransferClient
 	keyId     string
 	digest    string
 	algorithm string
@@ -559,7 +559,7 @@ type SignWorker struct {
 	ca string
 }
 
-func NewSignWorker(client *sdk.Client, keyId, digest, algorithm, ca string) *SignWorker {
+func NewSignWorker(client *sdk.TransferClient, keyId, digest, algorithm, ca string) *SignWorker {
 	return &SignWorker{
 		client:    client,
 		keyId:     keyId,
@@ -593,7 +593,7 @@ func (worker *SignWorker) sign() (*kms20160120.AsymmetricSignResponse, error) {
 }
 
 type VerifyWorker struct {
-	client    *sdk.Client
+	client    *sdk.TransferClient
 	keyId     string
 	value     string
 	digest    string
@@ -602,7 +602,7 @@ type VerifyWorker struct {
 	ca string
 }
 
-func NewVerifyWorker(client *sdk.Client, keyId, value, digest, algorithm, ca string) *VerifyWorker {
+func NewVerifyWorker(client *sdk.TransferClient, keyId, value, digest, algorithm, ca string) *VerifyWorker {
 	return &VerifyWorker{
 		client:    client,
 		keyId:     keyId,
@@ -638,14 +638,14 @@ func (worker *VerifyWorker) verify() (*kms20160120.AsymmetricVerifyResponse, err
 }
 
 type GetSecretValueWorker struct {
-	client     *sdk.Client
+	client     *sdk.TransferClient
 	secretName string
 
 	ca     string
 	logger seelog.LoggerInterface
 }
 
-func NewGetSecretValueWorker(client *sdk.Client, secretName, ca string) *GetSecretValueWorker {
+func NewGetSecretValueWorker(client *sdk.TransferClient, secretName, ca string) *GetSecretValueWorker {
 	return &GetSecretValueWorker{
 		client:     client,
 		secretName: secretName,
