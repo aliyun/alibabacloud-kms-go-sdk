@@ -19,4 +19,10 @@ const (
 	MigrationKeyVersionIdKey               = "x-kms-migrationkeyversionid"
 	NumberOfBytesAes256                    = 32
 	NumberOfBytesAes128                    = 16
+	MagicNum                               = '$'
+	MagicNumLength                         = 1
+	CipherVerAndPaddingModeLength          = 1
+	AlgorithmLength                        = 1
+	CipherVer                              = 0
+	AlgAesGcm                              = 2
 )

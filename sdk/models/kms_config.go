@@ -7,8 +7,12 @@ import (
 
 type KmsConfig struct {
 	*dkmsopenapi.Config
+	//默认使用KMS共享网关的接口API Name列表
 	DefaultKmsApiNames []string
-	Encoding           *string
+	//指定所有接口使用到的字符集编码
+	Encoding *string
+	// 高级接口开关 默认使用高级接口
+	AdvanceSwitch bool
 }
 
 func TransferKmsConfig(config interface{}) (*KmsConfig, error) {
