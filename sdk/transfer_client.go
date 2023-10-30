@@ -86,16 +86,7 @@ func (client *TransferClient) initKmsTransferHandlers() {
 		handlers.NewAsymmetricSignTransferHandler(client.Client, client.kmsClient, utils.AsymmetricSignApiName, client.kmsConfig))
 	client.handlers[utils.AsymmetricVerifyApiName] = handlers.NewWrappingKmsTransferHandler(
 		handlers.NewAsymmetricVerifyTransferHandler(client.Client, client.kmsClient, utils.AsymmetricVerifyApiName, client.kmsConfig))
-	if !client.kmsConfig.AdvanceSwitch {
-		client.handlers[utils.DecryptApiName] = handlers.NewWrappingKmsTransferHandler(
-			handlers.NewAdvanceDecryptTransferHandler(client.Client, client.kmsClient, utils.DecryptApiName, client.kmsConfig))
-		client.handlers[utils.EncryptApiName] = handlers.NewWrappingKmsTransferHandler(
-			handlers.NewAdvanceEncryptTransferHandler(client.Client, client.kmsClient, utils.EncryptApiName, client.kmsConfig))
-		client.handlers[utils.GenerateDataKeyApiName] = handlers.NewWrappingKmsTransferHandler(
-			handlers.NewAdvanceGenerateDataKeyTransferHandler(client.Client, client.kmsClient, utils.GenerateDataKeyApiName, client.kmsConfig))
-		client.handlers[utils.GenerateDataKeyWithoutPlaintextApiName] = handlers.NewWrappingKmsTransferHandler(
-			handlers.NewAdvanceGenerateDataKeyWithoutPlaintextTransferHandler(client.Client, client.kmsClient, utils.GenerateDataKeyWithoutPlaintextApiName, client.kmsConfig))
-	} else {
+	if client.kmsConfig != nil && client.kmsConfig.ForceLowVersionCryptoTransfer {
 		client.handlers[utils.DecryptApiName] = handlers.NewWrappingKmsTransferHandler(
 			handlers.NewDecryptTransferHandler(client.Client, client.kmsClient, utils.DecryptApiName, client.kmsConfig))
 		client.handlers[utils.EncryptApiName] = handlers.NewWrappingKmsTransferHandler(
@@ -104,7 +95,17 @@ func (client *TransferClient) initKmsTransferHandlers() {
 			handlers.NewGenerateDataKeyTransferHandler(client.Client, client.kmsClient, utils.GenerateDataKeyApiName, client.kmsConfig))
 		client.handlers[utils.GenerateDataKeyWithoutPlaintextApiName] = handlers.NewWrappingKmsTransferHandler(
 			handlers.NewGenerateDataKeyWithoutPlaintextTransferHandler(client.Client, client.kmsClient, utils.GenerateDataKeyWithoutPlaintextApiName, client.kmsConfig))
+	} else {
+		client.handlers[utils.DecryptApiName] = handlers.NewWrappingKmsTransferHandler(
+			handlers.NewAdvanceDecryptTransferHandler(client.Client, client.kmsClient, utils.DecryptApiName, client.kmsConfig))
+		client.handlers[utils.EncryptApiName] = handlers.NewWrappingKmsTransferHandler(
+			handlers.NewAdvanceEncryptTransferHandler(client.Client, client.kmsClient, utils.EncryptApiName, client.kmsConfig))
+		client.handlers[utils.GenerateDataKeyApiName] = handlers.NewWrappingKmsTransferHandler(
+			handlers.NewAdvanceGenerateDataKeyTransferHandler(client.Client, client.kmsClient, utils.GenerateDataKeyApiName, client.kmsConfig))
+		client.handlers[utils.GenerateDataKeyWithoutPlaintextApiName] = handlers.NewWrappingKmsTransferHandler(
+			handlers.NewAdvanceGenerateDataKeyWithoutPlaintextTransferHandler(client.Client, client.kmsClient, utils.GenerateDataKeyWithoutPlaintextApiName, client.kmsConfig))
 	}
+
 	client.handlers[utils.GetPublicKeyApiName] = handlers.NewWrappingKmsTransferHandler(
 		handlers.NewGetPublicKeyTransferHandler(client.Client, client.kmsClient, utils.GetPublicKeyApiName, client.kmsConfig))
 	client.handlers[utils.GetSecretValueApiName] = handlers.NewWrappingKmsTransferHandler(

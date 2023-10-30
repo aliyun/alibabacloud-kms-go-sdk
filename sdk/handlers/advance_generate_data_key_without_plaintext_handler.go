@@ -35,14 +35,14 @@ func (handler *AdvanceGenerateDataKeyWithoutPlaintextTransferHandler) GetAction(
 }
 
 func (handler *AdvanceGenerateDataKeyWithoutPlaintextTransferHandler) BuildKmsRequest(request interface{}, runtime *models.KmsRuntimeOptions) (interface{}, error) {
-	generateDataKeyReq := request.(*kms20160120.GenerateDataKeyRequest)
-	numberOfBytesInteger := generateDataKeyReq.NumberOfBytes
-	if generateDataKeyReq.NumberOfBytes == nil {
-		if tea.StringValue(generateDataKeyReq.KeySpec) == "" {
+	generateDataKeyWithoutPlaintextReq := request.(*kms20160120.GenerateDataKeyWithoutPlaintextRequest)
+	numberOfBytesInteger := generateDataKeyWithoutPlaintextReq.NumberOfBytes
+	if generateDataKeyWithoutPlaintextReq.NumberOfBytes == nil {
+		if tea.StringValue(generateDataKeyWithoutPlaintextReq.KeySpec) == "" {
 			numberOfBytesInteger = tea.Int32(utils.NumberOfBytesAes256)
-		} else if tea.StringValue(generateDataKeyReq.KeySpec) == utils.KMSKeySpecAES256 {
+		} else if tea.StringValue(generateDataKeyWithoutPlaintextReq.KeySpec) == utils.KMSKeySpecAES256 {
 			numberOfBytesInteger = tea.Int32(utils.NumberOfBytesAes256)
-		} else if tea.StringValue(generateDataKeyReq.KeySpec) == utils.KMSKeySpecAES128 {
+		} else if tea.StringValue(generateDataKeyWithoutPlaintextReq.KeySpec) == utils.KMSKeySpecAES128 {
 			numberOfBytesInteger = tea.Int32(utils.NumberOfBytesAes128)
 		} else {
 			return nil, tea.NewSDKError(map[string]interface{}{
@@ -52,15 +52,15 @@ func (handler *AdvanceGenerateDataKeyWithoutPlaintextTransferHandler) BuildKmsRe
 		}
 	}
 	var aad []byte
-	if generateDataKeyReq.EncryptionContext != nil {
+	if generateDataKeyWithoutPlaintextReq.EncryptionContext != nil {
 		var err error
-		aad, err = EncodeUserEncryptionContext(generateDataKeyReq.EncryptionContext)
+		aad, err = EncodeUserEncryptionContext(generateDataKeyWithoutPlaintextReq.EncryptionContext)
 		if err != nil {
 			return nil, err
 		}
 	}
 	result := &dkmssdk.AdvanceGenerateDataKeyRequest{
-		KeyId:         generateDataKeyReq.KeyId,
+		KeyId:         generateDataKeyWithoutPlaintextReq.KeyId,
 		NumberOfBytes: numberOfBytesInteger,
 		Aad:           aad,
 	}
@@ -73,13 +73,13 @@ func (handler *AdvanceGenerateDataKeyWithoutPlaintextTransferHandler) TransferRe
 	from := utils.MagicNumLength + utils.CipherVerAndPaddingModeLength + utils.AlgorithmLength
 	ciphertextBlob := dkmsResponse.CiphertextBlob[from:len(dkmsResponse.CiphertextBlob)]
 
-	body := &kms20160120.GenerateDataKeyResponseBody{
+	body := &kms20160120.GenerateDataKeyWithoutPlaintextResponseBody{
 		KeyId:          dkmsResponse.KeyId,
 		KeyVersionId:   keyVersionId,
 		CiphertextBlob: tea.String(base64.StdEncoding.EncodeToString(ciphertextBlob)),
 		RequestId:      dkmsResponse.RequestId,
 	}
-	return &kms20160120.GenerateDataKeyResponse{
+	return &kms20160120.GenerateDataKeyWithoutPlaintextResponse{
 		Body:       body,
 		StatusCode: tea.Int32(http.StatusOK),
 		Headers:    dkmsResponse.Headers,
@@ -110,6 +110,6 @@ func (handler *AdvanceGenerateDataKeyWithoutPlaintextTransferHandler) DedicateGa
 }
 
 func (handler *AdvanceGenerateDataKeyWithoutPlaintextTransferHandler) ShareGatewayApi(request interface{}, runtime *models.KmsRuntimeOptions) (interface{}, error) {
-	generateDataKeyReq := request.(*kms20160120.GenerateDataKeyRequest)
-	return handler.ShareClient.GenerateDataKeyWithOptions(generateDataKeyReq, runtime.RuntimeOptions)
+	generateDataKeyWithoutPlaintextReq := request.(*kms20160120.GenerateDataKeyWithoutPlaintextRequest)
+	return handler.ShareClient.GenerateDataKeyWithoutPlaintextWithOptions(generateDataKeyWithoutPlaintextReq, runtime.RuntimeOptions)
 }
