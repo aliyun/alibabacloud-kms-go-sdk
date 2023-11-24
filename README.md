@@ -28,7 +28,7 @@ file:
 
 ```text
 require (
-	github.com/aliyun/alibabacloud-kms-go-sdk v1.0.0
+	github.com/aliyun/alibabacloud-kms-go-sdk v1.0.1
 )
 ```
 

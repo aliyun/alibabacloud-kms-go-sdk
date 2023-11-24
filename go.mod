@@ -11,7 +11,7 @@ require (
 	github.com/alibabacloud-go/tea v1.2.1
 	github.com/alibabacloud-go/tea-console v1.0.0
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.3
-	github.com/aliyun/alibabacloud-dkms-gcs-go-sdk v0.4.0
+	github.com/aliyun/alibabacloud-dkms-gcs-go-sdk v0.5.1
 	github.com/cihub/seelog v0.0.0-20170130134532-f561c5e57575
 	golang.org/x/text v0.10.0
 )

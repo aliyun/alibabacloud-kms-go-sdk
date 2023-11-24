@@ -13,6 +13,8 @@ type KmsConfig struct {
 	Encoding *string
 	// 高级接口开关 默认使用高级接口
 	AdvanceSwitch bool
+	// 强制使用低级转换接口 默认是false,即使用高级转换接口
+	ForceLowVersionCryptoTransfer bool
 }
 
 func TransferKmsConfig(config interface{}) (*KmsConfig, error) {
@@ -31,5 +33,6 @@ func TransferKmsConfig(config interface{}) (*KmsConfig, error) {
 			"message": "Not support config param type.",
 		})
 	}
+
 	return kmsConfig, nil
 }

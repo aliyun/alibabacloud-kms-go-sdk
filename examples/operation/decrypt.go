@@ -44,7 +44,7 @@ func Decrypt (client *kmssdk.Client, paddingMode *string, aad []byte, ciphertext
 }
 
 func _main (args []*string) (_err error) {
-  kmsInstanceConfig, _err := CreateKmsInstanceConfig(env.GetEnv(tea.String("your client key file path env")), env.GetEnv(tea.String("your client key password env")), tea.String("your kms instance endpoint env"), tea.String("your ca file path"))
+  kmsInstanceConfig, _err := CreateKmsInstanceConfig(env.GetEnv(tea.String("your client key file path env")), env.GetEnv(tea.String("your client key password env")), tea.String("your kms instance endpoint"), tea.String("your ca file path"))
   if _err != nil {
     return _err
   }
