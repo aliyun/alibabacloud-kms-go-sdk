@@ -9,6 +9,7 @@ import (
 	"github.com/alibabacloud-go/tea/tea"
 	dedicatedkmsopenapi "github.com/aliyun/alibabacloud-dkms-gcs-go-sdk/openapi"
 	dedicatedkmssdk "github.com/aliyun/alibabacloud-dkms-gcs-go-sdk/sdk"
+	"github.com/aliyun/alibabacloud-kms-go-sdk/sdk/utils"
 )
 
 type Client struct {
@@ -26,7 +27,9 @@ func (client *Client) Init(kmsInstanceConfig *dedicatedkmsopenapi.Config, openAp
 	if kmsInstanceConfig == nil{
 		kmsInstanceConfig = &dedicatedkmsopenapi.Config{Endpoint: tea.String("mock endpoint")}
 	}
-
+	if kmsInstanceConfig.UserAgent == nil {
+		kmsInstanceConfig.UserAgent = tea.String(utils.ClientUserAgent)
+	}
 	_err = client.Client.Init(kmsInstanceConfig)
 	if _err != nil {
 		return _err

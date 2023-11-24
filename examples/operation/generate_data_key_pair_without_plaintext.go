@@ -30,15 +30,16 @@ func CreateClient (kmsInstanceConfig *dedicatedkmsopenapi.Config) (_result *kmss
   return _result, _err
 }
 
-func Sign (client *kmssdk.Client, messageType *string, keyId *string, message []byte, algorithm *string) (_result *dedicatedkmssdk.SignResponse, _err error) {
-  request := &dedicatedkmssdk.SignRequest{
-    MessageType: messageType,
+func GenerateDataKeyPairWithoutPlaintext (client *kmssdk.Client, keyFormat *string, aad []byte, keyId *string, keyPairSpec *string, algorithm *string) (_result *dedicatedkmssdk.GenerateDataKeyPairWithoutPlaintextResponse, _err error) {
+  request := &dedicatedkmssdk.GenerateDataKeyPairWithoutPlaintextRequest{
+    KeyFormat: keyFormat,
+    Aad: aad,
     KeyId: keyId,
-    Message: message,
+    KeyPairSpec: keyPairSpec,
     Algorithm: algorithm,
   }
-  _result = &dedicatedkmssdk.SignResponse{}
-  return client.Sign(request)
+  _result = &dedicatedkmssdk.GenerateDataKeyPairWithoutPlaintextResponse{}
+  return client.GenerateDataKeyPairWithoutPlaintext(request)
 }
 
 func _main (args []*string) (_err error) {
@@ -52,11 +53,12 @@ func _main (args []*string) (_err error) {
     return _err
   }
 
-  messageType := tea.String("your messageType")
+  keyFormat := tea.String("your keyFormat")
+  aad := util.ToBytes(tea.String("your aad"))
   keyId := tea.String("your keyId")
-  message := util.ToBytes(tea.String("your message"))
+  keyPairSpec := tea.String("your keyPairSpec")
   algorithm := tea.String("your algorithm")
-  response, _err := Sign(client, messageType, keyId, message, algorithm)
+  response, _err := GenerateDataKeyPairWithoutPlaintext(client, keyFormat, aad, keyId, keyPairSpec, algorithm)
   if _err != nil {
     return _err
   }
