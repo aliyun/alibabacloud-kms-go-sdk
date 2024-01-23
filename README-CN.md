@@ -26,7 +26,7 @@
 
 ```
 require (
-	github.com/aliyun/alibabacloud-kms-go-sdk v1.2.4
+	github.com/aliyun/alibabacloud-kms-go-sdk v1.2.3
 )
 ```
 
