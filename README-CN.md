@@ -26,7 +26,7 @@
 
 ```
 require (
-	github.com/aliyun/alibabacloud-kms-go-sdk v1.0.1
+	github.com/aliyun/alibabacloud-kms-go-sdk v1.2.3
 )
 ```
 
@@ -47,7 +47,7 @@ $ go get -u github.com/aliyun/alibabacloud-kms-go-sdk
 
 ### 1. 仅通过VPC网关进行密钥运算操作的场景。
 
-#### 参考以下示例代码调用KMS Encrypt API。更多API示例参考 [operation samples](./examples/operation)
+#### 参考以下示例代码调用KMS AdvanceEncrypt API。更多API示例参考 [operation samples](./examples/operation)
 
 ```go
 package example
@@ -80,17 +80,13 @@ func CreateClient(kmsInstanceConfig *dedicatedkmsopenapi.Config) (_result *kmssd
 	return _result, _err
 }
 
-func Encrypt(client *kmssdk.Client, paddingMode *string, aad []byte, keyId *string, plaintext []byte, iv []byte, algorithm *string) (_result *dedicatedkmssdk.EncryptResponse, _err error) {
-	request := &dedicatedkmssdk.EncryptRequest{
-		PaddingMode: paddingMode,
-		Aad:         aad,
+func AdvanceEncrypt(client *kmssdk.Client, keyId *string, plaintext []byte) (_result *dedicatedkmssdk.AdvanceEncryptResponse, _err error) {
+	request := &dedicatedkmssdk.AdvanceEncryptRequest{
 		KeyId:       keyId,
 		Plaintext:   plaintext,
-		Iv:          iv,
-		Algorithm:   algorithm,
 	}
-	_result = &dedicatedkmssdk.EncryptResponse{}
-	return client.Encrypt(request)
+	_result = &dedicatedkmssdk.AdvanceEncryptResponse{}
+	return client.AdvanceEncrypt(request)
 }
 
 func _main(args []*string) (_err error) {
@@ -103,14 +99,10 @@ func _main(args []*string) (_err error) {
 	if _err != nil {
 		return _err
 	}
-
-	paddingMode := tea.String("your paddingMode")
-	aad := util.ToBytes(tea.String("your aad"))
+	
 	keyId := tea.String("your keyId")
 	plaintext := util.ToBytes(tea.String("your plaintext"))
-	iv := util.ToBytes(tea.String("your iv"))
-	algorithm := tea.String("your algorithm")
-	response, _err := Encrypt(client, paddingMode, aad, keyId, plaintext, iv, algorithm)
+	response, _err := AdvanceEncrypt(client, keyId, plaintext)
 	if _err != nil {
 		return _err
 	}
@@ -222,7 +214,7 @@ func main() {
 
 ### 3. 既要通过VPC网关进行密钥运算操作又要通过公共网关对KMS资源管理的场景。
 
-#### 参考以下示例代码调用KMS CreateKey API 和 Encrypt API。更多API示例参考 [operation samples](./examples/operation) 和 [manage samples](./examples/manage)
+#### 参考以下示例代码调用KMS CreateKey API 和 AdvanceEncrypt API。更多API示例参考 [operation samples](./examples/operation) 和 [manage samples](./examples/manage)
 
 ```go
 package main
@@ -284,17 +276,13 @@ func CreateKey(client *kmssdk.Client, enableAutomaticRotation *bool, rotationInt
 	return _result, _err
 }
 
-func Encrypt(client *kmssdk.Client, paddingMode *string, aad []byte, keyId *string, plaintext []byte, iv []byte, algorithm *string) (_result *dedicatedkmssdk.EncryptResponse, _err error) {
-	request := &dedicatedkmssdk.EncryptRequest{
-		PaddingMode: paddingMode,
-		Aad:         aad,
+func AdvanceEncrypt(client *kmssdk.Client, keyId *string, plaintext []byte) (_result *dedicatedkmssdk.AdvanceEncryptResponse, _err error) {
+	request := &dedicatedkmssdk.AdvanceEncryptRequest{
 		KeyId:       keyId,
 		Plaintext:   plaintext,
-		Iv:          iv,
-		Algorithm:   algorithm,
 	}
-	_result = &dedicatedkmssdk.EncryptResponse{}
-	return client.Encrypt(request)
+	_result = &dedicatedkmssdk.AdvanceEncryptResponse{}
+	return client.AdvanceEncrypt(request)
 }
 
 func _main(args []*string) (_err error) {
@@ -327,14 +315,10 @@ func _main(args []*string) (_err error) {
 	}
 
 	console.Log(util.ToJSONString(createKeyResponse))
-
-	paddingMode := tea.String("your paddingMode")
-	aad := util.ToBytes(tea.String("your aad"))
+	
 	keyId := tea.String("your keyId")
 	plaintext := util.ToBytes(tea.String("your plaintext"))
-	iv := util.ToBytes(tea.String("your iv"))
-	algorithm := tea.String("your algorithm")
-	encryptResponse, _err := Encrypt(client, paddingMode, aad, keyId, plaintext, iv, algorithm)
+	encryptResponse, _err := AdvanceEncrypt(client, keyId, plaintext)
 	if _err != nil {
 		return _err
 	}

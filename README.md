@@ -28,7 +28,7 @@ file:
 
 ```text
 require (
-	github.com/aliyun/alibabacloud-kms-go-sdk v1.0.1
+	github.com/aliyun/alibabacloud-kms-go-sdk v1.2.3
 )
 ```
 
@@ -49,7 +49,7 @@ $ go get -u github.com/aliyun/alibabacloud-kms-go-sdk
 ## Sample code
 
 ### 1. Scenarios where key operations are performed only through VPC gateways.
-#### Refer to the following sample code to call the KMS Encrypt API. For more API examples, see [operation samples](./examples/operation)
+#### Refer to the following sample code to call the KMS AdvanceEncrypt API. For more API examples, see [operation samples](./examples/operation)
 ```go
 package example
 
@@ -81,17 +81,13 @@ func CreateClient(kmsInstanceConfig *dedicatedkmsopenapi.Config) (_result *kmssd
 	return _result, _err
 }
 
-func Encrypt(client *kmssdk.Client, paddingMode *string, aad []byte, keyId *string, plaintext []byte, iv []byte, algorithm *string) (_result *dedicatedkmssdk.EncryptResponse, _err error) {
-	request := &dedicatedkmssdk.EncryptRequest{
-		PaddingMode: paddingMode,
-		Aad:         aad,
+func AdvanceEncrypt(client *kmssdk.Client, keyId *string, plaintext []byte) (_result *dedicatedkmssdk.AdvanceEncryptResponse, _err error) {
+	request := &dedicatedkmssdk.AdvanceEncryptRequest{
 		KeyId:       keyId,
 		Plaintext:   plaintext,
-		Iv:          iv,
-		Algorithm:   algorithm,
 	}
-	_result = &dedicatedkmssdk.EncryptResponse{}
-	return client.Encrypt(request)
+	_result = &dedicatedkmssdk.AdvanceEncryptResponse{}
+	return client.AdvanceEncrypt(request)
 }
 
 func _main(args []*string) (_err error) {
@@ -104,14 +100,10 @@ func _main(args []*string) (_err error) {
 	if _err != nil {
 		return _err
 	}
-
-	paddingMode := tea.String("your paddingMode")
-	aad := util.ToBytes(tea.String("your aad"))
+	
 	keyId := tea.String("your keyId")
 	plaintext := util.ToBytes(tea.String("your plaintext"))
-	iv := util.ToBytes(tea.String("your iv"))
-	algorithm := tea.String("your algorithm")
-	response, _err := Encrypt(client, paddingMode, aad, keyId, plaintext, iv, algorithm)
+	response, _err := AdvanceEncrypt(client, keyId, plaintext)
 	if _err != nil {
 		return _err
 	}
@@ -221,7 +213,7 @@ func main() {
 ```
 
 ### 3. You must not only perform key operations through a VPC gateway, but also manage KMS resources through a public gateway.
-#### Refer to the following sample code to call the KMS CreateKey API and the Encrypt API. For more API examples, see [operation samples](./examples/operation) and [manage samples](./examplesmanage)
+#### Refer to the following sample code to call the KMS CreateKey API and AdvanceEncrypt API. For more API examples, see [operation samples](./examples/operation) and [manage samples](./examplesmanage)
 
 ```go
 package main
@@ -283,17 +275,13 @@ func CreateKey(client *kmssdk.Client, enableAutomaticRotation *bool, rotationInt
 	return _result, _err
 }
 
-func Encrypt (client *kmssdk.Client, paddingMode *string, aad []byte, keyId *string, plaintext []byte, iv []byte, algorithm *string) (_result *dedicatedkmssdk.EncryptResponse, _err error) {
-	request := &dedicatedkmssdk.EncryptRequest{
-		PaddingMode: paddingMode,
-		Aad: aad,
+func AdvanceEncrypt (client *kmssdk.Client, keyId *string, plaintext []byte) (_result *dedicatedkmssdk.AdvanceEncryptResponse, _err error) {
+	request := &dedicatedkmssdk.AdvanceEncryptRequest{
 		KeyId: keyId,
 		Plaintext: plaintext,
-		Iv: iv,
-		Algorithm: algorithm,
 	}
-	_result = &dedicatedkmssdk.EncryptResponse{}
-	return client.Encrypt(request)
+	_result = &dedicatedkmssdk.AdvanceEncryptResponse{}
+	return client.AdvanceEncrypt(request)
 }
 
 func _main(args []*string) (_err error) {
@@ -326,14 +314,10 @@ func _main(args []*string) (_err error) {
 	}
 
 	console.Log(util.ToJSONString(createKeyResponse))
-
-	paddingMode := tea.String("your paddingMode")
-	aad := util.ToBytes(tea.String("your aad"))
+	
 	keyId := tea.String("your keyId")
 	plaintext := util.ToBytes(tea.String("your plaintext"))
-	iv := util.ToBytes(tea.String("your iv"))
-	algorithm := tea.String("your algorithm")
-	encryptResponse, _err := Encrypt(client, paddingMode, aad, keyId, plaintext, iv, algorithm)
+	encryptResponse, _err := AdvanceEncrypt(client, keyId, plaintext)
 	if _err != nil {
 		return _err
 	}
