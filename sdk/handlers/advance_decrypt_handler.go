@@ -40,6 +40,11 @@ func (handler *AdvanceDecryptTransferHandler) BuildKmsRequest(request interface{
 	if err != nil {
 		return nil, err
 	}
+	if len(ciphertext) < utils.EktIdLength+utils.GcmIvLength {
+		return nil, tea.NewSDKError(map[string]interface{}{
+			"message": "The specified parameter CiphertextBlob is not valid, ciphertext length too small",
+		})
+	}
 	ivBytes := ciphertext[utils.EktIdLength : utils.EktIdLength+utils.GcmIvLength]
 	cipherVerAndPaddingMode := utils.CipherVer<<4 | 0
 	var aad []byte

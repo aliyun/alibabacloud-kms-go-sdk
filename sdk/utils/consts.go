@@ -26,7 +26,7 @@ const (
 	CipherVer                              = 0
 	AlgAesGcm                              = 2
 	SDKName                                = "alibabacloud-kms-go-sdk"
-	SDKVersion                             = "1.2.3"
+	SDKVersion                             = "1.2.4"
 	ClientUserAgent                        = SDKName + "-client/" + SDKVersion
 	TransferClientUserAgent                = SDKName + "-transfer-client/" + SDKVersion
 )
